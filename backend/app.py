@@ -27,6 +27,7 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 app = FastAPI(title="ExecSuite.ai - Multi-Department Dashboard")
+app.state.sse_loop = None
 
 # Enable CORS for local development
 app.add_middleware(
@@ -45,7 +46,6 @@ org = Organization(memory=memory)
 
 # Active SSE client queues
 sse_clients: List[asyncio.Queue] = []
-SSE_LOOP: Optional[asyncio.AbstractEventLoop] = None
 
 
 def broadcast_event(event: Dict[str, Any]) -> None:
@@ -63,8 +63,9 @@ def broadcast_event(event: Dict[str, Any]) -> None:
         for queue in sse_clients:
             await queue.put(event)
 
-    if SSE_LOOP:
-        asyncio.run_coroutine_threadsafe(push_to_queues(), SSE_LOOP)
+    sse_loop = getattr(app.state, "sse_loop", None)
+    if sse_loop:
+        asyncio.run_coroutine_threadsafe(push_to_queues(), sse_loop)
 
 
 # Register memory callback to broadcast events in real-time
@@ -162,7 +163,7 @@ def execute_task_thread(task: str, workflow: str) -> None:
     """
     try:
         org.run_task(task, workflow)
-    except Exception as ex:  # pylint: disable=broad-exception-caught
+    except Exception as ex:
         logger.error(f"[BACKGROUND_TASK_ERROR] Error: {ex}")
 
 
@@ -210,9 +211,8 @@ def read_file(path: str = Query(..., description="Relative path of file in works
 @app.get("/api/stream")
 async def event_stream() -> StreamingResponse:
     """SSE endpoint for streaming agent logs and updates in real-time."""
-    global SSE_LOOP  # pylint: disable=global-statement
-    if not SSE_LOOP:
-        SSE_LOOP = asyncio.get_event_loop()
+    if not getattr(app.state, "sse_loop", None):
+        app.state.sse_loop = asyncio.get_event_loop()
 
     queue: asyncio.Queue = asyncio.Queue()
     sse_clients.append(queue)

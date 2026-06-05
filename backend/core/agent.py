@@ -75,7 +75,7 @@ class Agent:
                     try:
                         content = self.memory.read_file(file_info['name'])
                         files_str += f"\n\n=== FILE: {file_info['name']} ===\n{content}\n=================="
-                    except Exception:  # pylint: disable=broad-exception-caught
+                    except Exception:
                         pass
 
         # Build prompt using XML structure for clear delimitation
@@ -143,7 +143,7 @@ Then, formulate your formal response and perform any file operations.
                     {"filepath": filepath}
                 )
                 written_files.add(filepath)
-            except Exception as ex:  # pylint: disable=broad-exception-caught
+            except Exception as ex:
                 logger.error(f"[FILE_WRITE_ERROR] Path: {filepath} | Format: XML | Error: {ex}")
 
         # Format 2: [WRITE_FILE: path] ... [END_FILE]
@@ -166,7 +166,7 @@ Then, formulate your formal response and perform any file operations.
                     {"filepath": filepath}
                 )
                 written_files.add(filepath)
-            except Exception as ex:  # pylint: disable=broad-exception-caught
+            except Exception as ex:
                 logger.error(f"[FILE_WRITE_ERROR] Path: {filepath} | Format: Brackets | Error: {ex}")
 
         # Format 3: ### FILE: path followed by ```lang ... ```
@@ -185,7 +185,7 @@ Then, formulate your formal response and perform any file operations.
                     {"filepath": filepath}
                 )
                 written_files.add(filepath)
-            except Exception as ex:  # pylint: disable=broad-exception-caught
+            except Exception as ex:
                 logger.error(f"[FILE_WRITE_ERROR] Path: {filepath} | Format: Markdown | Error: {ex}")
 
 
