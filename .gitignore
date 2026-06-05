@@ -21,3 +21,7 @@ test_workspace/
 .DS_Store
 Thumbs.db
 .gemini/
+
+# Agent Rules
+Agents.md
+
