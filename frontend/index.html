@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExecSuite.ai - Multi-Department Collaborative Suite</title>
+    <meta name="description" content="A real-time collaborative multi-department multi-agent platform.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation / Header -->
+        <header class="app-header">
+            <div class="header-logo">
+                <i data-lucide="layers" class="logo-icon"></i>
+                <div class="logo-text">
+                    <h1>ExecSuite.ai</h1>
+                    <span class="logo-sub">Multi-Department Campaigns</span>
+                </div>
+            </div>
+            <div class="header-status">
+                <div class="llm-badge">
+                    <i data-lucide="cpu" class="badge-icon"></i>
+                    <span id="active-llm-text">Detecting provider...</span>
+                </div>
+                <div class="status-pill idler" id="system-status-pill">
+                    <span class="status-dot"></span>
+                    <span id="system-status-text">Idle</span>
+                </div>
+                <button class="settings-btn" id="open-settings-btn" title="API Configuration">
+                    <i data-lucide="settings"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="app-main">
+            <!-- Left Panel: Team & Chat -->
+            <section class="panel-left">
+                <!-- Agent Team Status -->
+                <div class="team-card glass-panel">
+                    <div class="panel-header">
+                        <h2><i data-lucide="users"></i> Virtual Boardroom</h2>
+                    </div>
+                    <div class="agent-roster" id="agent-roster-list">
+                        <!-- Dynamic agent items will be rendered here by app.js -->
+                    </div>
+                </div>
+
+                <!-- Chat Conversation Stream -->
+                <div class="chat-card glass-panel">
+                    <div class="panel-header">
+                        <h2><i data-lucide="message-square"></i> Collaboration Feed</h2>
+                        <div style="display: flex; gap: 16px;">
+                            <div class="workflow-selector-container">
+                                <label for="department-select">Department:</label>
+                                <select id="department-select">
+                                    <!-- Options will be populated dynamically -->
+                                </select>
+                            </div>
+                            <div class="workflow-selector-container">
+                                <label for="workflow-select">Workflow:</label>
+                                <select id="workflow-select">
+                                    <option value="collaborative" selected>Collaborative (Round-table)</option>
+                                    <option value="sequential">Sequential (Waterfall)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages" id="chat-messages-container">
+                        <div class="welcome-message">
+                            <i data-lucide="bot" class="welcome-icon"></i>
+                            <h3>Welcome to ExecSuite.ai</h3>
+                            <p>Enter a task below to start your collaborative multi-department team. They will coordinate plans, write copy, code, analyze budgets, and execute campaigns in real-time.</p>
+                        </div>
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="input-container">
+                        <textarea id="task-input" placeholder="Describe the task you want the organization to build or solve... (e.g., 'Create a clean static web app for a recipe tracking list, including marketing copy and expense budgets.')" rows="2"></textarea>
+                        <button class="run-btn" id="run-task-btn">
+                            <i data-lucide="play" class="btn-icon"></i> Run Task
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Files & Documents -->
+            <section class="panel-right glass-panel">
+                <div class="panel-header tab-header">
+                    <button class="tab-btn active" id="tab-files-btn">
+                        <i data-lucide="folder-open"></i> Workspace Files
+                    </button>
+                    <button class="tab-btn" id="tab-console-btn">
+                        <i data-lucide="terminal"></i> System Event Logs
+                    </button>
+                </div>
+
+                <div class="tab-content" id="tab-files-content">
+                    <div class="workspace-layout">
+                        <!-- File Tree -->
+                        <div class="file-tree-container">
+                            <h3>Files</h3>
+                            <ul class="file-list" id="workspace-file-list">
+                                <li class="empty-list-msg">No files generated yet.</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- File Viewer -->
+                        <div class="file-viewer-container">
+                            <div class="file-viewer-header">
+                                <span id="open-filename-text"><i data-lucide="file-text"></i> Select a file to view</span>
+                                <button class="copy-file-btn" id="copy-file-btn" title="Copy file content" style="display: none;">
+                                    <i data-lucide="copy"></i>
+                                </button>
+                            </div>
+                            <pre class="file-viewer-body" id="file-viewer-body"><code>Select a generated file from the left panel to inspect its contents. As agents work, code and documents will appear here.</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content hidden" id="tab-console-content">
+                    <div class="console-logs-container" id="console-logs-list">
+                        <!-- Events will stream here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Settings Modal -->
+        <div class="modal-overlay hidden" id="settings-modal">
+            <div class="modal-card glass-panel">
+                <div class="modal-header">
+                    <h2><i data-lucide="settings"></i> API & Configuration</h2>
+                    <button class="close-modal-btn" id="close-settings-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="config-form">
+                        <div class="form-section">
+                            <h3>Active LLM Engine</h3>
+                            <div class="form-group">
+                                <label for="provider-select">Primary Provider</label>
+                                <select id="provider-select">
+                                    <option value="gemini">Google Gemini (Free/Paid Tier)</option>
+                                    <option value="groq">Groq (Llama/Gemma)</option>
+                                    <option value="openrouter">OpenRouter (Free Models)</option>
+                                    <option value="cohere">Cohere</option>
+                                    <option value="openai">OpenAI (ChatGPT)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="model-input">Model Name (optional override)</label>
+                                <input type="text" id="model-input" placeholder="e.g. gemini-2.5-flash">
+                                <small>Leave empty to use the default optimal model for the provider.</small>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>API Keys</h3>
+                            <p class="section-desc">Keys are stored securely in environment variables for this server session.</p>
+                            
+                            <div class="form-group">
+                                <label for="key-gemini">Gemini API Key</label>
+                                <div class="key-input-wrapper">
+                                    <input type="password" id="key-gemini" placeholder="••••••••••••••••••••••••">
+                                    <span class="key-status-indicator" id="status-key-gemini"><span class="dot"></span></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="key-groq">Groq API Key</label>
+                                <div class="key-input-wrapper">
+                                    <input type="password" id="key-groq" placeholder="••••••••••••••••••••••••">
+                                    <span class="key-status-indicator" id="status-key-groq"><span class="dot"></span></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="key-openrouter">OpenRouter API Key</label>
+                                <div class="key-input-wrapper">
+                                    <input type="password" id="key-openrouter" placeholder="••••••••••••••••••••••••">
+                                    <span class="key-status-indicator" id="status-key-openrouter"><span class="dot"></span></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="key-cohere">Cohere API Key</label>
+                                <div class="key-input-wrapper">
+                                    <input type="password" id="key-cohere" placeholder="••••••••••••••••••••••••">
+                                    <span class="key-status-indicator" id="status-key-cohere"><span class="dot"></span></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="key-openai">OpenAI API Key</label>
+                                <div class="key-input-wrapper">
+                                    <input type="password" id="key-openai" placeholder="••••••••••••••••••••••••">
+                                    <span class="key-status-indicator" id="status-key-openai"><span class="dot"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" id="cancel-settings-btn">Cancel</button>
+                            <button type="submit" class="btn-primary" id="save-settings-btn">Save Configuration</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>

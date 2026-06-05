@@ -1,0 +1,23 @@
+# Environments
+venv/
+.env
+backend/.env
+
+# Python caching
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Agent Workspaces and Outputs
+workspace/
+test_workspace/
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+.gemini/

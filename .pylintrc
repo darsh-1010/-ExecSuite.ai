@@ -1,0 +1,30 @@
+[MASTER]
+ignore=venv,.venv,.git,.pytest_cache,workspace
+init-hook="import sys; sys.path.insert(0, '.'); sys.path.insert(0, 'backend')"
+
+[MESSAGES CONTROL]
+# Disable warnings/errors that conflict with Agents.md guidelines
+# logging-fstring-interpolation: Agents.md requires using f-strings for all formatting, including logging.
+# import-outside-toplevel: Allows lazy importing of optional API clients in llm_wrapper.py.
+# too-few-public-methods: Allow classes designed with single interfaces (like wrappers or commands).
+# broad-exception-caught: Allow catching general Exception for fallback patterns and event trigger logic.
+# duplicate-code: Ignore duplicate code across tests.
+disable=
+    logging-fstring-interpolation,
+    import-outside-toplevel,
+    too-few-public-methods,
+    broad-exception-caught,
+    duplicate-code
+
+[FORMAT]
+max-line-length=120
+
+[DESIGN]
+max-args=6
+max-locals=15
+max-returns=6
+max-branches=12
+max-statements=50
+max-module-lines=700
+max-attributes=10
+max-parents=7
