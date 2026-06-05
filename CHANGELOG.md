@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file.
 - Added dynamic border-left styling on message bubbles based on active agent theme.
 - Extended test coverage in `backend/tests/test_core.py` with tests for `marketing_campaign` department and runtime setup switches.
 - Added `pytest.ini` and `.pylintrc` specifications.
+- Added Frontend UI/UX design standards (Section 11) to the coding rules in Agents.md.
+
 
 ### Changed
 - Refactored `backend/core/agent.py` to support 16 dynamic agent personas.

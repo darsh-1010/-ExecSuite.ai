@@ -292,6 +292,34 @@ To maintain a clear and up-to-date understanding of the software's architecture 
 
 ---
 
+## 11. Frontend UI/UX Standards
+
+All frontend code (HTML, CSS, JavaScript) must follow these strict guidelines to ensure premium, attractive, modern, and accessible user experiences.
+
+### A. Color & Theme (Dark Mode First)
+- **Harmonious Palettes**: Avoid pure black (`#000000`) for backgrounds. Use dark, desaturated grays/blues (e.g. HSL tailored colors like `#09090b` or `#121214`) to prevent eye strain and create a premium feel.
+- **Dynamic Theme Synchronization**: Support OS preference detection using CSS media query `@media (prefers-color-scheme: dark)` and retain persistent user choices locally using `localStorage`.
+
+### B. Glassmorphism & Depth
+- **Frosting Layer Effect**: Use semi-transparent glass panel styles with `backdrop-filter: blur(12px) saturate(180%)` and a subtle 1px border highlight (`rgba(255, 255, 255, 0.08)`) to define element edges.
+- **High Text Legibility**: Transparency can compromise contrast. Always overlay semi-opaque fills behind texts and test background combinations to satisfy WCAG AA standards.
+
+### C. Typography
+- **Modern Typography**: Avoid browser default fonts. Always import and use curated geometric or humanist sans-serif typefaces (e.g., *Inter*, *Outfit*, *Roboto*, or *Cabinet Grotesk* from Google Fonts).
+- **Hierarchy & Proportions**: Maintain strict type sizing scale and weight contrasts between headings, sub-headings, body, and labels.
+
+### D. Micro-Animations & Interactions
+- **Performance-First Animations**: Limit animations only to hardware-accelerated properties (`transform` and `opacity`) to prevent browser reflow delays.
+- **Natural Easing**: Keep transitions snappy (under 300ms) and use custom cubic-bezier curves (e.g., `cubic-bezier(0.4, 0, 0.2, 1)`) instead of linear easing.
+- **Active State Feedback**: Implement hover, focus, active, and loading indicators for all interactive elements to make the interface feel responsive and alive.
+
+### E. Accessibility & Markup
+- **Semantic HTML**: Build structural outlines using semantic tags (`<header>`, `<main>`, `<section>`, `<nav>`, `<footer>`) instead of generic `<div>` nests.
+- **Keyboard Friendly**: Ensure interactive elements have unique and descriptive IDs, visible focus states, and logical tab navigation indices.
+- **Respect Motion Preferences**: Support `@media (prefers-reduced-motion: reduce)` to automatically simplify or disable layout animations for users with vestibular sensitivities.
+
+---
+
 ## graphify
 
 This project uses **graphify** to maintain a persistent knowledge graph of the system architecture and workflows. All agents MUST prioritize this graph over manual codebase exploration.
